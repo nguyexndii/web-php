@@ -151,7 +151,7 @@ class ProductController {
             return;
         }
 
-        if(!isset($_SESSION['cart'])){
+        if(isset($_SESSION['cart'][$id])){
             $_SESSION['cart'][$id]['quantity']++;
         }else{
             $_SESSION['cart'][$id]=[
@@ -167,7 +167,7 @@ class ProductController {
 
     public function cart(){
         $cart = isset($_SESSION['cart'])? $_SESSION['cart'] : [];
-        include 'app/views/product/checkout.php';
+        include 'app/views/product/cart.php';
     }
 
     public function checkout(){
@@ -189,8 +189,9 @@ class ProductController {
             $this->db->beginTransaction();
 
             try{
-                // lưu thông tin đơn hàng vào orders
-                $query = "INSERT INTO order (name, phone, address) VALUES (:name, :phone, :address)";
+                // SỬA: Đặt tên bảng order trong dấu ` ` vì order là từ khóa của SQL (ORDER BY)
+                // $query = "INSERT INTO `order` (name, phone, address) VALUES (:name, :phone, :address)";
+                $query = "INSERT INTO Orders (Name, Phone, Address) VALUES (:name, :phone, :address)";
                 $stmt = $this->db->prepare($query);
                 $stmt -> bindParam(':name', $name);
                 $stmt -> bindParam(':phone', $phone);
@@ -201,13 +202,14 @@ class ProductController {
                 // lưu chi tiết đơn hàng vào order_details
                 $cart = $_SESSION['cart'];
                 foreach($cart as $product_id => $item){
-                    $query = "INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (:order_id, :product_id, :quantity, :price)";
+                    // $query = "INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (:order_id, :product_id, :quantity, :price)";
+                    $query = "INSERT INTO Orders_Detail (Order_Id, Product_Id, Quantity, Price) VALUES (:order_id, :product_id, :quantity, :price)";
                     $stmt = $this->db->prepare($query);
                     $stmt -> bindParam(':order_id', $order_id);
                     $stmt -> bindParam(':product_id', $product_id);
                     $stmt -> bindParam(':quantity', $item['quantity']);
-                    $smtm -> bindParam(':price', $item['price']);
-                    $smtm -> execute();
+                    $stmt -> bindParam(':price', $item['price']); // SỬA: $smtm thành $stmt
+                    $stmt -> execute();                           // SỬA: $smtm thành $stmt
                 }
                 
                 // xóa giỏ hàng sau khi đặt
@@ -216,17 +218,17 @@ class ProductController {
                 $this->db->commit();
 
                 header('Location: /webbanhang/Product/orderConfirmation');
-            }catch(Ex $e){
+            }catch(Exception $e){ // SỬA: Ex thành Exception
                 $this->db->rollBack();
                 echo "Xảy ra lỗi: ". $e->getMessage();
             }
         }
-
-        
     }
 
     public function orderConfirmation(){
         include 'app/views/product/orderConfirmation.php';
     }
+
+    // public 
 }
 ?>

@@ -9,10 +9,10 @@
                 <h2><?php echo htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                 
                 <?php if (!empty($item['image'])): ?>
-                    <img src="/webbanhang/<?php echo htmlspecialchars($item['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="Product Image" style="max-width: 100px;">
+                    <img src="/webbanhang/public/images/<?php echo htmlspecialchars($item['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="Product Image" style="max-width: 100px;">
                 <?php endif; ?>
                 
-                <p>Giá: <?php echo htmlspecialchars($item['price'], ENT_QUOTES, 'UTF-8'); ?> VND</p>
+                <p>Giá: <?php echo number_format($item['price'], 0, ',', '.'); ?> VND</p>
                 <p>Số lượng: <?php echo htmlspecialchars($item['quantity'], ENT_QUOTES, 'UTF-8'); ?></p>
             </li>
         <?php endforeach; ?>

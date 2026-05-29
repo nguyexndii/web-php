@@ -33,7 +33,7 @@
                     <a class="nav-link" href="/webbanhang/Product/add">Thêm sản phẩm</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/cart/">Giỏ hàng</a>
+                    <a class="nav-link" href="/webbanhang/Product/cart">Giỏ hàng</a>
                 </li>
             </ul>
         </div>
