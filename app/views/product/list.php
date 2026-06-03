@@ -9,16 +9,17 @@
         </div>
         
         <?php if (empty($products)): ?>
+            <!-- Hiển thị thông báo khi không tìm thấy sản phẩm hoặc cửa hàng trống -->
             <div class="alert alert-info shadow-sm text-center py-4">
                 <i class="fas fa-info-circle fa-2x mb-2 text-info"></i>
-                <p class="mb-0">Hiện chưa có sản phẩm nào trong cửa hàng của bạn.</p>
+                <p class="mb-0"><?php echo !empty($search) ? 'Không tìm thấy sản phẩm nào với từ khóa "' . htmlspecialchars($search, ENT_QUOTES, 'UTF-8') . '".' : 'Hiện chưa có sản phẩm nào trong cửa hàng của bạn.'; ?></p>
             </div>
         <?php else: ?>
             <!-- Lưới hiển thị 4 sản phẩm trên một hàng ngang -->
             <div class="row">
                 <?php foreach ($products as $product): ?>
                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 mb-4 d-flex align-items-stretch">
-                        <div class="card shadow-sm w-100 border rounded d-flex flex-column justify-content-between hover-card">
+                        <div class="card shadow-sm w-100 border rounded d-flex flex-column justify-content-between">
                             <!-- Hình ảnh minh họa sản phẩm -->
                             <div class="text-center bg-light border-bottom position-relative" style="height: 200px; line-height: 200px; overflow: hidden;">
                                 <?php if (!empty($product->image) && file_exists('public/images/' . $product->image)): ?>
@@ -79,11 +80,15 @@
             
             <!-- Thanh điều hướng liên kết chọn trang (Previous 1 2 3 Next) -->
             <?php if ($totalPages > 1): ?>
+                <?php 
+                    // Tạo chuỗi query tìm kiếm để đính kèm vào các link phân trang
+                    $searchParam = !empty($search) ? '&search=' . urlencode($search) : ''; 
+                ?>
                 <nav aria-label="Page navigation" class="mt-4 d-flex justify-content-center">
                     <ul class="pagination shadow-sm border rounded mb-0">
                         <!-- Liên kết Previous -->
                         <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
-                            <a class="page-link border-0 text-secondary" href="?page=<?php echo $page - 1; ?>" aria-label="Previous">
+                            <a class="page-link border-0 text-secondary" href="?page=<?php echo $page - 1; ?><?php echo $searchParam; ?>" aria-label="Previous">
                                 <span aria-hidden="true">&laquo; Previous</span>
                             </a>
                         </li>
@@ -91,13 +96,13 @@
                         <!-- Danh sách các trang dạng số -->
                         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                             <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
-                                <a class="page-link border-0 <?php echo $i == $page ? 'bg-primary text-white font-weight-bold' : 'text-primary'; ?>" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                <a class="page-link border-0 <?php echo $i == $page ? 'bg-primary text-white font-weight-bold' : 'text-primary'; ?>" href="?page=<?php echo $i; ?><?php echo $searchParam; ?>"><?php echo $i; ?></a>
                             </li>
                         <?php endfor; ?>
                         
                         <!-- Liên kết Next -->
                         <li class="page-item <?php echo $page >= $totalPages ? 'disabled' : ''; ?>">
-                            <a class="page-link border-0 text-secondary" href="?page=<?php echo $page + 1; ?>" aria-label="Next">
+                            <a class="page-link border-0 text-secondary" href="?page=<?php echo $page + 1; ?><?php echo $searchParam; ?>" aria-label="Next">
                                 <span aria-hidden="true">Next &raquo;</span>
                             </a>
                         </li>
@@ -108,15 +113,5 @@
     </div>
 </div>
 
-<!-- CSS bổ sung để tăng tính sinh động khi di chuột vào sản phẩm -->
-<style>
-    .hover-card {
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .hover-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
-    }
-</style>
 
 <?php include 'app/views/shares/footer.php'; ?>

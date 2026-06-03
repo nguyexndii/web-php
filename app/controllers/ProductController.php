@@ -13,9 +13,9 @@ class ProductController {
         $this->productModel = new ProductModel($this->db);
     }
 
-    // Hiển thị danh sách sản phẩm (có tích hợp phân trang dạng lưới)
+    // Hiển thị danh sách sản phẩm (có tích hợp phân trang dạng lưới và tìm kiếm)
     public function index() {
-        // Cấu hình phân trang: 8 sản phẩm trên một trang (hiển thị vừa vặn 2 hàng ngang, mỗi hàng 4 sản phẩm)
+        // Cấu hình phân trang: 8 sản phẩm trên một trang
         $limit = 8;
         $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
         if ($page < 1) {
@@ -23,11 +23,20 @@ class ProductController {
         }
         $offset = ($page - 1) * $limit;
 
-        // Lấy sản phẩm có giới hạn LIMIT và OFFSET phục vụ phân trang
-        $products = $this->productModel->getProductsLimit($offset, $limit);
+        // Nhận từ khóa tìm kiếm nếu có
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+        // Nếu có từ khóa tìm kiếm thì gọi hàm search của model
+        if ($search !== '') {
+            $products = $this->productModel->searchProductsLimit($search, $offset, $limit);
+            $totalProducts = $this->productModel->countSearchProducts($search);
+        } else {
+            // Ngược lại lấy danh sách bình thường
+            $products = $this->productModel->getProductsLimit($offset, $limit);
+            $totalProducts = $this->productModel->countProducts();
+        }
         
         // Tính toán tổng số trang
-        $totalProducts = $this->productModel->countProducts();
         $totalPages = ceil($totalProducts / $limit);
 
         include 'app/views/product/list.php';
@@ -144,6 +153,7 @@ class ProductController {
         return $imageName;
     }
 
+    // Thêm sản phẩm vào giỏ hàng và lưu trong Session
     public function addToCart($id) {
         $product = $this->productModel->getProductById($id);
         if(!$product){
@@ -151,6 +161,7 @@ class ProductController {
             return;
         }
 
+        // Tạo giỏ hàng hoặc cập nhật số lượng nếu sản phẩm đã có
         if(isset($_SESSION['cart'][$id])){
             $_SESSION['cart'][$id]['quantity']++;
         }else{
@@ -162,35 +173,45 @@ class ProductController {
             ];
         }
 
+        // Chuyển hướng đến trang giỏ hàng và dừng chương trình
         header('Location: /webbanhang/Product/cart');
+        exit();
     }
 
+    // Hiển thị trang giỏ hàng
     public function cart(){
         $cart = isset($_SESSION['cart'])? $_SESSION['cart'] : [];
         include 'app/views/product/cart.php';
     }
 
+    // Hiển thị trang thanh toán thông tin đơn hàng
     public function checkout(){
+        // Chặn không cho vào trang thanh toán nếu giỏ hàng rỗng
+        if(!isset($_SESSION['cart']) || empty($_SESSION['cart'])){
+            header('Location: /webbanhang/Product/cart');
+            exit();
+        }
         include 'app/views/product/checkout.php';
     }
 
+    // Xử lý lưu đơn hàng và chi tiết đơn hàng
     public function processCheckout(){
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $name = $_POST['name'];
             $phone = $_POST['phone'];
             $address = $_POST['address'];
 
-            // kiểm tra giỏ hàng
+            // Kiểm tra giỏ hàng trống trước khi lưu
             if(!isset($_SESSION['cart']) || empty($_SESSION['cart'])){
-                echo "Giỏ hàng rỗng";
-                return;
+                header('Location: /webbanhang/Product/cart');
+                exit();
             }
 
+            // Bắt đầu giao dịch an toàn
             $this->db->beginTransaction();
 
             try{
-                // SỬA: Đặt tên bảng order trong dấu ` ` vì order là từ khóa của SQL (ORDER BY)
-                // $query = "INSERT INTO `order` (name, phone, address) VALUES (:name, :phone, :address)";
+                // Thêm thông tin đơn hàng mới
                 $query = "INSERT INTO Orders (Name, Phone, Address) VALUES (:name, :phone, :address)";
                 $stmt = $this->db->prepare($query);
                 $stmt -> bindParam(':name', $name);
@@ -199,33 +220,47 @@ class ProductController {
                 $stmt -> execute();
                 $order_id = $this->db->lastInsertId();
 
-                // lưu chi tiết đơn hàng vào order_details
+                // Lưu từng sản phẩm từ giỏ hàng vào bảng chi tiết đơn hàng Orders_Detail
                 $cart = $_SESSION['cart'];
                 foreach($cart as $product_id => $item){
-                    // $query = "INSERT INTO order_details (order_id, product_id, quantity, price) VALUES (:order_id, :product_id, :quantity, :price)";
-                    $query = "INSERT INTO Orders_Detail (Order_Id, Product_Id, Quantity, Price) VALUES (:order_id, :product_id, :quantity, :price)";
-                    $stmt = $this->db->prepare($query);
-                    $stmt -> bindParam(':order_id', $order_id);
-                    $stmt -> bindParam(':product_id', $product_id);
-                    $stmt -> bindParam(':quantity', $item['quantity']);
-                    $stmt -> bindParam(':price', $item['price']); // SỬA: $smtm thành $stmt
-                    $stmt -> execute();                           // SỬA: $smtm thành $stmt
+                    $queryDetail = "INSERT INTO Orders_Detail (Order_Id, Product_Id, Quantity, Price) VALUES (:order_id, :product_id, :quantity, :price)";
+                    $stmtDetail = $this->db->prepare($queryDetail);
+                    $stmtDetail->execute([
+                        ':order_id' => $order_id,
+                        ':product_id' => $product_id,
+                        ':quantity' => $item['quantity'],
+                        ':price' => $item['price']
+                    ]);
                 }
                 
-                // xóa giỏ hàng sau khi đặt
+                // Xóa giỏ hàng sau khi đặt thành công
                 unset($_SESSION['cart']);
 
+                // Xác nhận giao dịch thành công
                 $this->db->commit();
 
-                header('Location: /webbanhang/Product/orderConfirmation');
-            }catch(Exception $e){ // SỬA: Ex thành Exception
+                // Chuyển hướng kèm mã đơn hàng
+                header('Location: /webbanhang/Product/orderConfirmation/' . $order_id);
+                exit();
+            }catch(Exception $e){ 
                 $this->db->rollBack();
                 echo "Xảy ra lỗi: ". $e->getMessage();
             }
         }
     }
 
-    public function orderConfirmation(){
+    // Hiển thị trang xác nhận đơn hàng thành công và mã QR thanh toán
+    public function orderConfirmation($orderId = null){
+        $orderTotal = 0;
+        // Nếu có mã đơn hàng, truy vấn tính tổng số tiền đơn hàng để làm mã QR
+        if ($orderId) {
+            $query = "SELECT SUM(Quantity * Price) as total FROM Orders_Detail WHERE Order_Id = :order_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindParam(':order_id', $orderId, PDO::PARAM_INT);
+            $stmt->execute();
+            $result = $stmt->fetch(PDO::FETCH_OBJ);
+            $orderTotal = $result ? $result->total : 0;
+        }
         include 'app/views/product/orderConfirmation.php';
     }
 

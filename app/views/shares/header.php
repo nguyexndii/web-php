@@ -36,6 +36,11 @@
                     <a class="nav-link" href="/webbanhang/Product/cart">Giỏ hàng</a>
                 </li>
             </ul>
+            <!-- Form tìm kiếm sản phẩm gửi từ khóa qua tham số 'search' bằng phương thức GET -->
+            <form class="form-inline ml-auto" action="/webbanhang/Product/" method="GET">
+                <input class="form-control mr-2" type="text" name="search" placeholder="Tìm kiếm sản phẩm..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search'], ENT_QUOTES, 'UTF-8') : ''; ?>" required>
+                <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+            </form>
         </div>
     </nav>
     
