@@ -1,4 +1,5 @@
 <?php
+session_start();
 // Tải trước Model của Sản phẩm như giáo trình yêu cầu
 require_once 'app/models/ProductModel.php';
 

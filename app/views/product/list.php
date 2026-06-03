@@ -64,10 +64,13 @@
                             </div>
                             
                             <!-- Chân thẻ chứa các nút thao tác nhanh -->
-                            <div class="card-footer bg-white border-top-0 p-2 d-flex justify-content-around">
-                                <a href="/webbanhang/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary btn-sm">Chi tiết</a>
-                                <a href="/webbanhang/Product/edit/<?php echo $product->id; ?>" class="btn btn-outline-warning btn-sm text-dark font-weight-bold">Sửa</a>
-                                <a href="/webbanhang/Product/delete/<?php echo $product->id; ?>" class="btn btn-outline-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
+                            <div class="card-footer bg-white border-top-0 p-2 d-flex flex-column">
+                                <div class="d-flex justify-content-around mb-2">
+                                    <a href="/webbanhang/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary btn-sm flex-fill mx-1">Chi tiết</a>
+                                    <a href="/webbanhang/Product/edit/<?php echo $product->id; ?>" class="btn btn-outline-warning btn-sm text-dark font-weight-bold flex-fill mx-1">Sửa</a>
+                                    <a href="/webbanhang/Product/delete/<?php echo $product->id; ?>" class="btn btn-outline-danger btn-sm flex-fill mx-1" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
+                                </div>
+                                <a href="/webbanhang/Product/addToCart/<?php echo $product->id; ?>" class="btn btn-primary btn-sm w-100">Thêm vào giỏ</a>
                             </div>
                         </div>
                     </div>
