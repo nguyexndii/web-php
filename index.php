@@ -2,6 +2,7 @@
 session_start();
 // Tải trước Model của Sản phẩm như giáo trình yêu cầu
 require_once 'app/models/ProductModel.php';
+require_once 'app/helpers/SessionHelper.php';
 
 // Nhận tham số URL từ .htaccess
 $url = $_GET['url'] ?? '';

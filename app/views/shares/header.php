@@ -35,6 +35,12 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/webbanhang/Product/cart">Giỏ hàng</a>
                 </li>
+                <li class="nav-item">
+                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link'>".$_SESSION['username']."</a>"; } else{ echo "<a class='nav-link' href='/webbanhang/account/login'>Login</a>"; } ?>
+                </li>
+                <li class="nav-item">
+                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link' href='/webbanhang/account/logout'>Logout</a>"; } ?>
+                </li>
             </ul>
             <!-- Form tìm kiếm sản phẩm gửi từ khóa qua tham số 'search' bằng phương thức GET -->
             <form class="form-inline ml-auto" action="/webbanhang/Product/" method="GET">
