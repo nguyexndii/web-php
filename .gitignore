@@ -25,3 +25,7 @@ node_modules/
 
 # Tài liệu học tập PDF
 *.pdf
+
+# File nen nop bai
+*.zip
+*.rar

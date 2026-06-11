@@ -1,89 +1,104 @@
-<?php include 'app/views/shares/header.php'; ?>
+<?php include 'app/views/shares/header.php'; ?> 
 
-<div class="row">
-    <div class="col-md-8 offset-md-2">
-        <h1 class="my-4 text-center text-primary">Chỉnh sửa sản phẩm</h1>
-        
-        <?php if (!empty($errors)): ?>
-            <div class="alert alert-danger shadow-sm">
-                <ul class="mb-0">
-                    <?php foreach ($errors as $error): ?>
-                        <li><strong>Lỗi:</strong> <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-        
-        <!-- Đã thêm thuộc tính enctype="multipart/form-data" để hỗ trợ upload hình ảnh mới -->
-        <form method="POST" action="<?php echo BASE_PATH; ?>/Product/update" enctype="multipart/form-data" onsubmit="return validateForm();" class="shadow-sm p-4 rounded bg-white border">
-            <input type="hidden" name="id" value="<?php echo htmlspecialchars($product->id, ENT_QUOTES, 'UTF-8'); ?>">
-            
-            <div class="form-group">
-                <label for="name" class="font-weight-bold">Tên sản phẩm:</label>
-                <input type="text" id="name" name="name" class="form-control" value="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="description" class="font-weight-bold">Mô tả chi tiết:</label>
-                <textarea id="description" name="description" class="form-control" rows="4" required><?php echo htmlspecialchars($product->description, ENT_QUOTES, 'UTF-8'); ?></textarea>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6 col-sm-12">
-                    <div class="form-group">
-                        <label for="price" class="font-weight-bold">Giá sản phẩm (VNĐ):</label>
-                        <input type="number" id="price" name="price" class="form-control" step="1000" value="<?php echo htmlspecialchars((int)$product->price, ENT_QUOTES, 'UTF-8'); ?>" required>
-                    </div>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <div class="form-group">
-                        <label for="category_id" class="font-weight-bold">Danh mục:</label>
-                        <select id="category_id" name="category_id" class="form-control" required>
-                            <?php foreach ($categories as $category): ?>
-                                <option value="<?php echo $category->id; ?>" <?php echo $category->id == $product->category_id ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($category->name, ENT_QUOTES, 'UTF-8'); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </div>
-            </div>
+<?php
+if (!SessionHelper::isAdmin()) {
+    echo "<div class='alert alert-danger my-4'><i class='fas fa-exclamation-triangle mr-2'></i>Bạn không có quyền truy cập trang này!</div>";
+    include 'app/views/shares/footer.php';
+    exit;
+}
+?>
 
-            <!-- Xem trước hình ảnh sản phẩm cũ -->
-            <div class="form-group">
-                <label class="font-weight-bold">Hình ảnh sản phẩm hiện tại:</label>
-                <div class="mb-3">
-                    <?php if (!empty($product->image) && file_exists('public/images/' . $product->image)): ?>
-                        <img src="<?php echo BASE_PATH; ?>/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="img-thumbnail" style="max-height: 150px; object-fit: contain;">
-                    <?php else: ?>
-                        <div class="p-3 bg-light text-muted border rounded text-center d-inline-block" style="width: 150px; height: 150px; line-height: 110px;">
-                            Chưa có ảnh
-                        </div>
-                    <?php endif; ?>
-                </div>
-                
-                <label for="image" class="font-weight-bold">Thay thế bằng hình ảnh mới (Nếu muốn):</label>
-                <div class="custom-file">
-                    <input type="file" id="image" name="image" class="custom-file-input" accept="image/*">
-                    <label class="custom-file-label" for="image">Chọn hình ảnh sản phẩm mới...</label>
-                </div>
-                <small class="form-text text-muted">Bỏ trống ô này nếu muốn giữ lại ảnh minh họa hiện tại.</small>
-            </div>
-            
-            <button type="submit" class="btn btn-warning btn-block mt-4 text-dark font-weight-bold">Lưu thay đổi</button>
-        </form>
-        
-        <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
-    </div>
-</div>
+<h1>Sửa sản phẩm</h1> 
 
-<!-- Script để tự động hiển thị tên tệp tin ảnh vừa chọn -->
-<script>
-    document.querySelector('.custom-file-input').addEventListener('change', function(e) {
-        var fileName = document.getElementById("image").files[0].name;
-        var nextSibling = e.target.nextElementSibling;
-        nextSibling.innerText = fileName;
-    });
+<form id="edit-product-form" class="shadow-sm p-4 rounded bg-white border"> 
+    <input type="hidden" id="id" name="id"> 
+    
+    <div class="form-group"> 
+        <label for="name" class="font-weight-bold">Tên sản phẩm:</label> 
+        <input type="text" id="name" name="name" class="form-control" required> 
+    </div> 
+    
+    <div class="form-group mt-3"> 
+        <label for="description" class="font-weight-bold">Mô tả:</label> 
+        <textarea id="description" name="description" class="form-control" rows="4" required></textarea> 
+    </div> 
+    
+    <div class="form-group mt-3"> 
+        <label for="price" class="font-weight-bold">Giá (VND):</label>
+        <input type="number" id="price" name="price" class="form-control" required> 
+    </div> 
+    
+    <div class="form-group mt-3"> 
+        <label for="category_id" class="font-weight-bold">Danh mục:</label> 
+        <select id="category_id" name="category_id" class="form-control" required> 
+            <!-- Các danh mục sẽ được tải từ API và hiển thị tại đây --> 
+        </select> 
+    </div> 
+    
+    <button type="submit" class="btn btn-primary mt-4 font-weight-bold shadow-sm">Lưu thay đổi</button> 
+</form> 
+
+<a href="<?php echo BASE_PATH; ?>/Product/list" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a> 
+
+<?php include 'app/views/shares/footer.php'; ?> 
+
+<script> 
+const BASE_PATH = '<?php echo BASE_PATH; ?>';
+const productId = <?php echo $product->id; ?>;
+
+document.addEventListener("DOMContentLoaded", function() { 
+    // Tải thông tin chi tiết sản phẩm từ API
+    fetch(BASE_PATH + `/api/product/${productId}`) 
+        .then(response => response.json()) 
+        .then(data => { 
+            document.getElementById('id').value = data.id; 
+            document.getElementById('name').value = data.name; 
+            document.getElementById('description').value = data.description; 
+            document.getElementById('price').value = data.price; 
+            document.getElementById('category_id').value = data.category_id; 
+        }); 
+
+    // Tải danh mục từ API
+    fetch(BASE_PATH + '/api/category') 
+        .then(response => response.json()) 
+        .then(data => { 
+            const categorySelect = document.getElementById('category_id'); 
+            data.forEach(category => { 
+                const option = document.createElement('option'); 
+                option.value = category.id; 
+                option.textContent = category.name; 
+                categorySelect.appendChild(option); 
+            }); 
+        }); 
+
+    // Xử lý gửi cập nhật bằng AJAX
+    document.getElementById('edit-product-form').addEventListener('submit', function(event) {
+        event.preventDefault(); 
+        const formData = new FormData(this); 
+        const jsonData = {}; 
+        formData.forEach((value, key) => { 
+            jsonData[key] = value; 
+        }); 
+
+        fetch(BASE_PATH + `/api/product/${jsonData.id}`, { 
+            method: 'PUT', 
+            headers: { 
+                'Content-Type': 'application/json' 
+            }, 
+            body: JSON.stringify(jsonData) 
+        }) 
+        .then(response => response.json()) 
+        .then(data => { 
+            if (data.message === 'Product updated successfully') { 
+                location.href = BASE_PATH + '/Product/list'; 
+            } else { 
+                alert('Cập nhật sản phẩm thất bại'); 
+            } 
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Lỗi kết nối máy chủ!');
+        });
+    }); 
+}); 
 </script>
-
-<?php include 'app/views/shares/footer.php'; ?>
