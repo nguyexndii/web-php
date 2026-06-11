@@ -51,7 +51,7 @@ CREATE TABLE if NOT EXISTS account
     Id INT auto_increment PRIMARY KEY,
     Username VARCHAR(40) NOT NULL unique,
     Fullname VARCHAR(100) NOT NULL,
-    Password VARCHAR(20) NOT NULL,    
+    Password VARCHAR(255) NOT NULL,    
     ROLE ENUM('admin','user') DEFAULT 'user'
 );
 
@@ -85,3 +85,9 @@ INSERT INTO Product(Name, Description, Price, Image, Category_Id) VALUES
 ('Samsung Galaxy Tab S9', 'Máy tính bảng kháng nước bụi IP68 cao cấp kèm bút S-Pen thông minh.', 16990000, NULL, 3),
 ('Google Pixel 8 Pro', 'Điện thoại thông minh của Google hỗ trợ trí tuệ nhân tạo AI và camera siêu nét.', 19990000, NULL, 1),
 ('Laptop HP Envy 16', 'Laptop đồ họa mỏng nhẹ hiệu năng cao, màn hình OLED 120Hz sống động.', 28500000, NULL, 2);
+
+-- Chen du lieu mau cho account (Tai khoan: admin/123qwe123, user1/123qwe123)
+INSERT INTO account(Username, Fullname, Password, ROLE) VALUES
+('admin', 'Admin User', '$2y$10$xeIJ06XVK765XH4Hn8Ee2OkcC27cuiOiPb9SJZ/pwyUmGEcbLNXfC', 'admin'),
+('user1', 'Normal User', '$2y$10$xeIJ06XVK765XH4Hn8Ee2OkcC27cuiOiPb9SJZ/pwyUmGEcbLNXfC', 'user');
+

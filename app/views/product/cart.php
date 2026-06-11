@@ -13,7 +13,7 @@
                 <h2><?php echo htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8'); ?></h2>
                 
                 <?php if (!empty($item['image'])): ?>
-                    <img src="/webbanhang/public/images/<?php echo htmlspecialchars($item['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="Product Image" style="max-width: 100px;">
+                    <img src="<?php echo BASE_PATH; ?>/public/images/<?php echo htmlspecialchars($item['image'], ENT_QUOTES, 'UTF-8'); ?>" alt="Product Image" style="max-width: 100px;">
                 <?php endif; ?>
                 
                 <p>Giá: <?php echo number_format($item['price'], 0, ',', '.'); ?> VND</p>
@@ -35,10 +35,10 @@
 <?php endif; ?>
 
 <div class="mt-3">
-    <a href="/webbanhang/Product" class="btn btn-secondary mt-2">Tiếp tục mua sắm</a>
+    <a href="<?php echo BASE_PATH; ?>/Product" class="btn btn-secondary mt-2">Tiếp tục mua sắm</a>
     <?php if (!empty($cart)): ?>
         <!-- Chỉ hiển thị nút thanh toán khi giỏ hàng có sản phẩm -->
-        <a href="/webbanhang/Product/checkout" class="btn btn-primary mt-2">Thanh Toán</a>
+        <a href="<?php echo BASE_PATH; ?>/Product/checkout" class="btn btn-primary mt-2">Thanh Toán</a>
     <?php endif; ?>
 </div>
 

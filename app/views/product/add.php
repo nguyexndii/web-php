@@ -15,7 +15,7 @@
         <?php endif; ?>
         
         <!-- Đã thêm thuộc tính enctype="multipart/form-data" để hỗ trợ upload hình ảnh -->
-        <form method="POST" action="/webbanhang/Product/save" enctype="multipart/form-data" onsubmit="return validateForm();" class="shadow-sm p-4 rounded bg-white border">
+        <form method="POST" action="<?php echo BASE_PATH; ?>/Product/save" enctype="multipart/form-data" onsubmit="return validateForm();" class="shadow-sm p-4 rounded bg-white border">
             <div class="form-group">
                 <label for="name" class="font-weight-bold">Tên sản phẩm:</label>
                 <input type="text" id="name" name="name" class="form-control" placeholder="Nhập tên sản phẩm (ví dụ: iPhone 15 Pro Max)" required>
@@ -59,7 +59,7 @@
             <button type="submit" class="btn btn-primary btn-block mt-4">Thêm sản phẩm</button>
         </form>
         
-        <a href="/webbanhang/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
+        <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
     </div>
 </div>
 

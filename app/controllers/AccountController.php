@@ -46,7 +46,7 @@ class AccountController {
             } else { 
                 $result = $this->accountModel->save($username, $fullName, $password, $role); 
                 if ($result) { 
-                    header('Location: /webbanhang/account/login'); 
+                    header('Location: ' . BASE_PATH . '/account/login'); 
                     exit; 
                 } 
             } 
@@ -58,7 +58,7 @@ class AccountController {
         SessionHelper::start(); 
         unset($_SESSION['username']); 
         unset($_SESSION['role']); 
-        header('Location: /webbanhang/product'); 
+        header('Location: ' . BASE_PATH . '/product'); 
         exit; 
     } 
 
@@ -73,7 +73,7 @@ class AccountController {
                 SessionHelper::start(); 
                 $_SESSION['username'] = $account->username; 
                 $_SESSION['role'] = $account->role; 
-                header('Location: /webbanhang/product'); 
+                header('Location: ' . BASE_PATH . '/product'); 
                 exit; 
             } else { 
                 $error = $account ? "Mật khẩu không đúng!" : "Không tìm thấy tài khoản!"; 

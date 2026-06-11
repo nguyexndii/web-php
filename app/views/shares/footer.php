@@ -15,8 +15,8 @@
                 <div class="col-lg-3 col-md-6 mb-4">
                     <h5 class="text-uppercase">Liên kết nhanh</h5>
                     <ul class="list-unstyled mb-0">
-                        <li><a href="/webbanhang/Product/" class="text-dark">Danh sách sản phẩm</a></li>
-                        <li><a href="/webbanhang/Product/add" class="text-dark">Thêm sản phẩm</a></li>
+                        <li><a href="<?php echo BASE_PATH; ?>/Product/" class="text-dark">Danh sách sản phẩm</a></li>
+                        <li><a href="<?php echo BASE_PATH; ?>/Product/add" class="text-dark">Thêm sản phẩm</a></li>
                     </ul>
                 </div>
                 <!-- Cột mạng xã hội -->

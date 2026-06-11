@@ -1,4 +1,5 @@
 <?php
+define('BASE_PATH', rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])), '/'));
 session_start();
 // Tải trước Model của Sản phẩm như giáo trình yêu cầu
 require_once 'app/models/ProductModel.php';

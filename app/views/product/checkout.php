@@ -31,13 +31,13 @@
                 <strong class="text-danger h5 mb-0"><?php echo number_format($totalPrice, 0, ',', '.'); ?> VND</strong>
             </li>
         </ul>
-        <a href="/webbanhang/Product/cart" class="btn btn-outline-secondary btn-block shadow-sm mt-3">Quay lại giỏ hàng</a>
+        <a href="<?php echo BASE_PATH; ?>/Product/cart" class="btn btn-outline-secondary btn-block shadow-sm mt-3">Quay lại giỏ hàng</a>
     </div>
     
     <!-- Cột hiển thị Form để người dùng nhập thông tin giao nhận hàng -->
     <div class="col-md-6">
         <h3 class="mb-3 text-secondary">Thông tin giao hàng</h3>
-        <form method="POST" action="/webbanhang/Product/processCheckout" class="p-4 border rounded shadow-sm bg-white">
+        <form method="POST" action="<?php echo BASE_PATH; ?>/Product/processCheckout" class="p-4 border rounded shadow-sm bg-white">
             <div class="form-group">
                 <label for="name" class="font-weight-bold">Họ tên người nhận:</label>
                 <input type="text" id="name" name="name" class="form-control" placeholder="Nhập đầy đủ họ tên..." required>

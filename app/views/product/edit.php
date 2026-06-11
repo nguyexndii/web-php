@@ -15,7 +15,7 @@
         <?php endif; ?>
         
         <!-- Đã thêm thuộc tính enctype="multipart/form-data" để hỗ trợ upload hình ảnh mới -->
-        <form method="POST" action="/webbanhang/Product/update" enctype="multipart/form-data" onsubmit="return validateForm();" class="shadow-sm p-4 rounded bg-white border">
+        <form method="POST" action="<?php echo BASE_PATH; ?>/Product/update" enctype="multipart/form-data" onsubmit="return validateForm();" class="shadow-sm p-4 rounded bg-white border">
             <input type="hidden" name="id" value="<?php echo htmlspecialchars($product->id, ENT_QUOTES, 'UTF-8'); ?>">
             
             <div class="form-group">
@@ -54,7 +54,7 @@
                 <label class="font-weight-bold">Hình ảnh sản phẩm hiện tại:</label>
                 <div class="mb-3">
                     <?php if (!empty($product->image) && file_exists('public/images/' . $product->image)): ?>
-                        <img src="/webbanhang/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="img-thumbnail" style="max-height: 150px; object-fit: contain;">
+                        <img src="<?php echo BASE_PATH; ?>/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="img-thumbnail" style="max-height: 150px; object-fit: contain;">
                     <?php else: ?>
                         <div class="p-3 bg-light text-muted border rounded text-center d-inline-block" style="width: 150px; height: 150px; line-height: 110px;">
                             Chưa có ảnh
@@ -73,7 +73,7 @@
             <button type="submit" class="btn btn-warning btn-block mt-4 text-dark font-weight-bold">Lưu thay đổi</button>
         </form>
         
-        <a href="/webbanhang/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
+        <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
     </div>
 </div>
 

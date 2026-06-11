@@ -5,7 +5,9 @@
         <h1 class="my-4 text-center text-primary font-weight-bold">Danh sách sản phẩm</h1>
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 class="text-muted">Tổng số sản phẩm: <strong><?php echo $totalProducts; ?></strong></h5>
-            <a href="/webbanhang/Product/add" class="btn btn-success font-weight-bold shadow-sm">Thêm sản phẩm mới</a>
+            <?php if (SessionHelper::isAdmin()): ?>
+                <a href="<?php echo BASE_PATH; ?>/Product/add" class="btn btn-success font-weight-bold shadow-sm">Thêm sản phẩm mới</a>
+            <?php endif; ?>
         </div>
         
         <?php if (empty($products)): ?>
@@ -23,7 +25,7 @@
                             <!-- Hình ảnh minh họa sản phẩm -->
                             <div class="text-center bg-light border-bottom position-relative" style="height: 200px; line-height: 200px; overflow: hidden;">
                                 <?php if (!empty($product->image) && file_exists('public/images/' . $product->image)): ?>
-                                    <img src="/webbanhang/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="w-100 h-100" style="object-fit: cover;">
+                                    <img src="<?php echo BASE_PATH; ?>/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="w-100 h-100" style="object-fit: cover;">
                                 <?php else: ?>
                                     <div class="h-100 w-100 d-flex flex-column align-items-center justify-content-center text-muted">
                                         <span class="small font-weight-bold">Không có ảnh</span>
@@ -35,7 +37,7 @@
                             <div class="card-body p-3 d-flex flex-column justify-content-between">
                                 <div>
                                     <h5 class="card-title font-weight-bold mb-2">
-                                        <a href="/webbanhang/Product/show/<?php echo $product->id; ?>" class="text-dark text-decoration-none" title="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>">
+                                        <a href="<?php echo BASE_PATH; ?>/Product/show/<?php echo $product->id; ?>" class="text-dark text-decoration-none" title="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>">
                                             <?php 
                                                 // Tránh tiêu đề quá dài làm vỡ bố cục
                                                 $name = htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8');
@@ -67,11 +69,13 @@
                             <!-- Chân thẻ chứa các nút thao tác nhanh -->
                             <div class="card-footer bg-white border-top-0 p-2 d-flex flex-column">
                                 <div class="d-flex justify-content-around mb-2">
-                                    <a href="/webbanhang/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary btn-sm flex-fill mx-1">Chi tiết</a>
-                                    <a href="/webbanhang/Product/edit/<?php echo $product->id; ?>" class="btn btn-outline-warning btn-sm text-dark font-weight-bold flex-fill mx-1">Sửa</a>
-                                    <a href="/webbanhang/Product/delete/<?php echo $product->id; ?>" class="btn btn-outline-danger btn-sm flex-fill mx-1" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
+                                    <a href="<?php echo BASE_PATH; ?>/Product/show/<?php echo $product->id; ?>" class="btn btn-outline-primary btn-sm flex-fill mx-1">Chi tiết</a>
+                                    <?php if (SessionHelper::isAdmin()): ?>
+                                        <a href="<?php echo BASE_PATH; ?>/Product/edit/<?php echo $product->id; ?>" class="btn btn-outline-warning btn-sm text-dark font-weight-bold flex-fill mx-1">Sửa</a>
+                                        <a href="<?php echo BASE_PATH; ?>/Product/delete/<?php echo $product->id; ?>" class="btn btn-outline-danger btn-sm flex-fill mx-1" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa</a>
+                                    <?php endif; ?>
                                 </div>
-                                <a href="/webbanhang/Product/addToCart/<?php echo $product->id; ?>" class="btn btn-primary btn-sm w-100">Thêm vào giỏ</a>
+                                <a href="<?php echo BASE_PATH; ?>/Product/addToCart/<?php echo $product->id; ?>" class="btn btn-primary btn-sm w-100">Thêm vào giỏ</a>
                             </div>
                         </div>
                     </div>

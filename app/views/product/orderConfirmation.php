@@ -44,7 +44,7 @@
     <?php endif; ?>
 
     <div class="mt-4">
-        <a href="/webbanhang/Product" class="btn btn-primary font-weight-bold shadow-sm px-4 py-2">Tiếp tục mua hàng</a>
+        <a href="<?php echo BASE_PATH; ?>/Product" class="btn btn-primary font-weight-bold shadow-sm px-4 py-2">Tiếp tục mua hàng</a>
     </div>
 </div>
 

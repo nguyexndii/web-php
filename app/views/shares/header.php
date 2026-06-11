@@ -20,30 +20,32 @@
 <body>
     <!-- Thanh điều hướng navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/webbanhang/Product/">Quản lý sản phẩm</a>
+        <a class="navbar-brand" href="<?php echo BASE_PATH; ?>/Product/">Quản lý sản phẩm</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/">Danh sách sản phẩm</a>
+                    <a class="nav-link" href="<?php echo BASE_PATH; ?>/Product/">Danh sách sản phẩm</a>
+                </li>
+                <?php if (SessionHelper::isAdmin()): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?php echo BASE_PATH; ?>/Product/add">Thêm sản phẩm</a>
+                    </li>
+                <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?php echo BASE_PATH; ?>/Product/cart">Giỏ hàng</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/add">Thêm sản phẩm</a>
+                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link'>".htmlspecialchars($_SESSION['username'])." (".SessionHelper::getRole().")</a>"; } else{ echo "<a class='nav-link' href='" . BASE_PATH . "/account/login'>Đăng nhập</a>"; } ?>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/webbanhang/Product/cart">Giỏ hàng</a>
-                </li>
-                <li class="nav-item">
-                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link'>".$_SESSION['username']."</a>"; } else{ echo "<a class='nav-link' href='/webbanhang/account/login'>Login</a>"; } ?>
-                </li>
-                <li class="nav-item">
-                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link' href='/webbanhang/account/logout'>Logout</a>"; } ?>
+                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link' href='" . BASE_PATH . "/account/logout'>Đăng xuất</a>"; } ?>
                 </li>
             </ul>
             <!-- Form tìm kiếm sản phẩm gửi từ khóa qua tham số 'search' bằng phương thức GET -->
-            <form class="form-inline ml-auto" action="/webbanhang/Product/" method="GET">
+            <form class="form-inline ml-auto" action="<?php echo BASE_PATH; ?>/Product/" method="GET">
                 <input class="form-control mr-2" type="text" name="search" placeholder="Tìm kiếm sản phẩm..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search'], ENT_QUOTES, 'UTF-8') : ''; ?>" required>
                 <button class="btn btn-primary" type="submit">Tìm kiếm</button>
             </form>

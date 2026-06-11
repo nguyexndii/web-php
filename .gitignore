@@ -22,3 +22,6 @@ yarn-error.log*
 # Thư mục thư viện (nếu sau này có dùng Composer hoặc NPM)
 vendor/
 node_modules/
+
+# Tài liệu học tập PDF
+*.pdf

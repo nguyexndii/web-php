@@ -3,6 +3,7 @@
 require_once('app/config/database.php');
 require_once('app/models/ProductModel.php');
 require_once('app/models/CategoryModel.php');
+require_once('app/helpers/SessionHelper.php');
 
 class ProductController {
     private $productModel;
@@ -11,6 +12,11 @@ class ProductController {
     public function __construct() {
         $this->db = (new Database())->getConnection();
         $this->productModel = new ProductModel($this->db);
+    }
+
+    // Kiểm tra quyền Admin
+    private function isAdmin() {
+        return SessionHelper::isAdmin();
     }
 
     // Hiển thị danh sách sản phẩm (có tích hợp phân trang dạng lưới và tìm kiếm)
@@ -54,12 +60,20 @@ class ProductController {
 
     // Trang thêm sản phẩm mới
     public function add() {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         $categories = (new CategoryModel($this->db))->getCategories();
         include_once 'app/views/product/add.php';
     }
 
     // Xử lý lưu sản phẩm mới
     public function save() {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $name = $_POST['name'] ?? '';
             $description = $_POST['description'] ?? '';
@@ -75,7 +89,7 @@ class ProductController {
                 $categories = (new CategoryModel($this->db))->getCategories();
                 include 'app/views/product/add.php';
             } else {
-                header('Location: /webbanhang/Product');
+                header('Location: ' . BASE_PATH . '/Product');
                 exit();
             }
         }
@@ -83,6 +97,10 @@ class ProductController {
 
     // Giao diện chỉnh sửa sản phẩm
     public function edit($id) {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         $product = $this->productModel->getProductById($id);
         $categories = (new CategoryModel($this->db))->getCategories();
         if ($product) {
@@ -94,6 +112,10 @@ class ProductController {
 
     // Xử lý cập nhật thông tin sản phẩm
     public function update() {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
             $name = $_POST['name'];
@@ -107,7 +129,7 @@ class ProductController {
             // Nếu người dùng không tải ảnh mới lên, $image sẽ là null và giữ nguyên ảnh cũ
             $edit = $this->productModel->updateProduct($id, $name, $description, $price, $category_id, $image);
             if ($edit) {
-                header('Location: /webbanhang/Product');
+                header('Location: ' . BASE_PATH . '/Product');
                 exit();
             } else {
                 echo "Đã xảy ra lỗi khi lưu sản phẩm.";
@@ -117,8 +139,12 @@ class ProductController {
 
     // Xử lý xóa sản phẩm
     public function delete($id) {
+        if (!$this->isAdmin()) {
+            echo "Bạn không có quyền truy cập chức năng này!";
+            exit;
+        }
         if ($this->productModel->deleteProduct($id)) {
-            header('Location: /webbanhang/Product');
+            header('Location: ' . BASE_PATH . '/Product');
             exit();
         } else {
             echo "Đã xảy ra lỗi khi xóa sản phẩm.";
@@ -174,7 +200,7 @@ class ProductController {
         }
 
         // Chuyển hướng đến trang giỏ hàng và dừng chương trình
-        header('Location: /webbanhang/Product/cart');
+        header('Location: ' . BASE_PATH . '/Product/cart');
         exit();
     }
 
@@ -188,7 +214,7 @@ class ProductController {
     public function checkout(){
         // Chặn không cho vào trang thanh toán nếu giỏ hàng rỗng
         if(!isset($_SESSION['cart']) || empty($_SESSION['cart'])){
-            header('Location: /webbanhang/Product/cart');
+            header('Location: ' . BASE_PATH . '/Product/cart');
             exit();
         }
         include 'app/views/product/checkout.php';
@@ -203,7 +229,7 @@ class ProductController {
 
             // Kiểm tra giỏ hàng trống trước khi lưu
             if(!isset($_SESSION['cart']) || empty($_SESSION['cart'])){
-                header('Location: /webbanhang/Product/cart');
+                header('Location: ' . BASE_PATH . '/Product/cart');
                 exit();
             }
 
@@ -240,7 +266,7 @@ class ProductController {
                 $this->db->commit();
 
                 // Chuyển hướng kèm mã đơn hàng
-                header('Location: /webbanhang/Product/orderConfirmation/' . $order_id);
+                header('Location: ' . BASE_PATH . '/Product/orderConfirmation/' . $order_id);
                 exit();
             }catch(Exception $e){ 
                 $this->db->rollBack();

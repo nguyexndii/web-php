@@ -14,7 +14,7 @@
                     <div class="col-md-5 col-sm-12 text-center mb-4 mb-md-0 d-flex align-items-center justify-content-center">
                         <div class="border rounded bg-light p-2 shadow-sm d-flex align-items-center justify-content-center" style="width: 100%; max-width: 350px; height: 350px; overflow: hidden;">
                             <?php if (!empty($product->image) && file_exists('public/images/' . $product->image)): ?>
-                                <img src="/webbanhang/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="img-fluid rounded" style="max-height: 100%; object-fit: contain;">
+                                <img src="<?php echo BASE_PATH; ?>/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="img-fluid rounded" style="max-height: 100%; object-fit: contain;">
                             <?php else: ?>
                                 <div class="text-muted text-center">
                                     <i class="fas fa-box-open fa-5x mb-3 text-secondary"></i>
@@ -62,11 +62,13 @@
             </div>
             
             <div class="card-footer bg-light d-flex justify-content-between p-3">
-                <a href="/webbanhang/Product/" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại danh sách</a>
-                <div>
-                    <a href="/webbanhang/Product/edit/<?php echo $product->id; ?>" class="btn btn-warning mr-2 text-dark font-weight-bold">Sửa sản phẩm</a>
-                    <a href="/webbanhang/Product/delete/<?php echo $product->id; ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa sản phẩm</a>
-                </div>
+                <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại danh sách</a>
+                <?php if (SessionHelper::isAdmin()): ?>
+                    <div>
+                        <a href="<?php echo BASE_PATH; ?>/Product/edit/<?php echo $product->id; ?>" class="btn btn-warning mr-2 text-dark font-weight-bold">Sửa sản phẩm</a>
+                        <a href="<?php echo BASE_PATH; ?>/Product/delete/<?php echo $product->id; ?>" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này?');">Xóa sản phẩm</a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
