@@ -48,6 +48,11 @@ class ProductController {
         include 'app/views/product/list.php';
     }
 
+    // Đồng bộ action list về index để tránh lỗi "Action not found: list" khi truy cập /Product/list
+    public function list() {
+        $this->index();
+    }
+
     // Xem chi tiết sản phẩm
     public function show($id) {
         $product = $this->productModel->getProductById($id);

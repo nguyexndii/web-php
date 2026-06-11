@@ -38,7 +38,8 @@ if (!SessionHelper::isAdmin()) {
     <button type="submit" class="btn btn-primary mt-4 font-weight-bold shadow-sm">Lưu thay đổi</button> 
 </form> 
 
-<a href="<?php echo BASE_PATH; ?>/Product/list" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a> 
+<a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a> 
+
 
 <?php include 'app/views/shares/footer.php'; ?> 
 
@@ -90,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json()) 
         .then(data => { 
             if (data.message === 'Product updated successfully') { 
-                location.href = BASE_PATH + '/Product/list'; 
+                location.href = BASE_PATH + '/Product/'; 
             } else { 
                 alert('Cập nhật sản phẩm thất bại'); 
             } 
