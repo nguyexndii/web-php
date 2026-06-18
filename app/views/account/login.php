@@ -8,13 +8,7 @@
                 <p class="text-muted mb-0 mt-1 small">Vui lòng nhập tài khoản và mật khẩu</p>
             </div>
             <div class="card-body p-4">
-                <?php if (isset($error)): ?>
-                    <div class="alert alert-danger shadow-sm py-2 text-center" role="alert">
-                        <?php echo htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); ?>
-                    </div>
-                <?php endif; ?>
-
-                <form action="<?php echo BASE_PATH; ?>/account/checklogin" method="post">
+                <form id="login-form">
                     <div class="form-group">
                         <label for="username" class="font-weight-bold text-secondary">Tên đăng nhập</label>
                         <input type="text" id="username" name="username" class="form-control" placeholder="Nhập username..." required autofocus>
@@ -41,3 +35,47 @@
 </div>
 
 <?php include 'app/views/shares/footer.php'; ?>
+
+<script>
+// Định nghĩa đường dẫn cơ sở động
+const BASE_PATH = '<?php echo BASE_PATH; ?>';
+
+document.getElementById('login-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Chặn hành động reload trang mặc định của form
+    
+    const formData = new FormData(this);
+    const jsonData = {};
+    formData.forEach((value, key) => {
+        jsonData[key] = value;
+    });
+
+    // Gọi API đăng nhập dạng JSON
+    fetch(BASE_PATH + '/account/checkLogin', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jsonData)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Đăng nhập thất bại');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.token) {
+            // Lưu token JWT vào localStorage đúng theo hướng dẫn Bài 6 trong PDF
+            localStorage.setItem('jwtToken', data.token);
+            // Chuyển hướng về trang danh sách sản phẩm
+            location.href = BASE_PATH + '/Product';
+        } else {
+            alert('Đăng nhập thất bại: Không nhận được token!');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Tên đăng nhập hoặc mật khẩu không chính xác!');
+    });
+});
+</script>

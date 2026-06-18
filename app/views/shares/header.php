@@ -29,19 +29,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="<?php echo BASE_PATH; ?>/Product/">Danh sách sản phẩm</a>
                 </li>
-                <?php if (SessionHelper::isAdmin()): ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="<?php echo BASE_PATH; ?>/Product/add">Thêm sản phẩm</a>
-                    </li>
-                <?php endif; ?>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?php echo BASE_PATH; ?>/Product/cart">Giỏ hàng</a>
+                <li class="nav-item" id="nav-add-product" style="display: none;">
+                    <a class="nav-link" href="<?php echo BASE_PATH; ?>/Product/add">Thêm sản phẩm</a>
                 </li>
-                <li class="nav-item">
-                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link'>".htmlspecialchars($_SESSION['username'])." (".SessionHelper::getRole().")</a>"; } else{ echo "<a class='nav-link' href='" . BASE_PATH . "/account/login'>Đăng nhập</a>"; } ?>
+                <li class="nav-item" id="nav-login">
+                    <a class="nav-link" href="<?php echo BASE_PATH; ?>/account/login">Login</a>
                 </li>
-                <li class="nav-item">
-                    <?php if(SessionHelper::isLoggedIn()){ echo "<a class='nav-link' href='" . BASE_PATH . "/account/logout'>Đăng xuất</a>"; } ?>
+                <li class="nav-item" id="nav-logout" style="display: none;">
+                    <a class="nav-link" href="#" onclick="logout()">Logout</a>
                 </li>
             </ul>
             <!-- Form tìm kiếm sản phẩm gửi từ khóa qua tham số 'search' bằng phương thức GET -->
@@ -51,6 +46,39 @@
             </form>
         </div>
     </nav>
+    
+    <script>
+    const BASE_PATH_HEADER = '<?php echo BASE_PATH; ?>';
+
+    function logout() {
+        localStorage.removeItem('jwtToken');
+        location.href = BASE_PATH_HEADER + '/account/login';
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            document.getElementById('nav-login').style.display = 'none';
+            document.getElementById('nav-logout').style.display = 'block';
+            
+            // Giải mã token ở client để kiểm tra quyền admin hiển thị menu thêm sản phẩm
+            try {
+                const base64Url = token.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const payload = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
+                if (payload.data && payload.data.role === 'admin') {
+                    document.getElementById('nav-add-product').style.display = 'block';
+                }
+            } catch (e) {
+                console.error("Lỗi giải mã token tại header:", e);
+            }
+        } else {
+            document.getElementById('nav-login').style.display = 'block';
+            document.getElementById('nav-logout').style.display = 'none';
+            document.getElementById('nav-add-product').style.display = 'none';
+        }
+    });
+    </script>
     
     <!-- Mở thẻ container chính để ôm lấy toàn bộ nội dung của các trang con (list, add, edit, show) -->
     <div class="container mt-4">

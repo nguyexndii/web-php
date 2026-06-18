@@ -65,10 +65,7 @@ class ProductController {
 
     // Trang thêm sản phẩm mới
     public function add() {
-        if (!$this->isAdmin()) {
-            echo "Bạn không có quyền truy cập chức năng này!";
-            exit;
-        }
+        // Cho phép truy cập công khai trang HTML, quyền bảo mật sẽ được kiểm tra ở client-side bằng JS (JWT)
         $categories = (new CategoryModel($this->db))->getCategories();
         include_once 'app/views/product/add.php';
     }
@@ -102,10 +99,7 @@ class ProductController {
 
     // Giao diện chỉnh sửa sản phẩm
     public function edit($id) {
-        if (!$this->isAdmin()) {
-            echo "Bạn không có quyền truy cập chức năng này!";
-            exit;
-        }
+        // Cho phép truy cập công khai trang HTML, quyền bảo mật sẽ được kiểm tra ở client-side bằng JS (JWT)
         $product = $this->productModel->getProductById($id);
         $categories = (new CategoryModel($this->db))->getCategories();
         if ($product) {
