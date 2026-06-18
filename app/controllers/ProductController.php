@@ -79,11 +79,13 @@ class ProductController {
             $description = $_POST['description'] ?? '';
             $price = $_POST['price'] ?? '';
             $category_id = $_POST['category_id'] ?? null;
+            $is_best_selling = isset($_POST['is_best_selling']) ? 1 : 0;
+            $is_new = isset($_POST['is_new']) ? 1 : 0;
 
             // Xử lý upload ảnh minh họa
             $image = $this->uploadImage();
 
-            $result = $this->productModel->addProduct($name, $description, $price, $category_id, $image);
+            $result = $this->productModel->addProduct($name, $description, $price, $category_id, $image, $is_best_selling, $is_new);
             if (is_array($result)) {
                 $errors = $result;
                 $categories = (new CategoryModel($this->db))->getCategories();
@@ -122,12 +124,14 @@ class ProductController {
             $description = $_POST['description'];
             $price = $_POST['price'];
             $category_id = $_POST['category_id'];
+            $is_best_selling = isset($_POST['is_best_selling']) ? 1 : 0;
+            $is_new = isset($_POST['is_new']) ? 1 : 0;
 
             // Xử lý upload ảnh minh họa (nếu có ảnh mới được chọn)
             $image = $this->uploadImage();
 
             // Nếu người dùng không tải ảnh mới lên, $image sẽ là null và giữ nguyên ảnh cũ
-            $edit = $this->productModel->updateProduct($id, $name, $description, $price, $category_id, $image);
+            $edit = $this->productModel->updateProduct($id, $name, $description, $price, $category_id, $image, $is_best_selling, $is_new);
             if ($edit) {
                 header('Location: ' . BASE_PATH . '/Product');
                 exit();

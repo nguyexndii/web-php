@@ -10,7 +10,7 @@ class ProductModel {
     // Lấy toàn bộ sản phẩm và tên danh mục tương ứng
     public function getProducts() {
         // Đồng bộ hóa các trường truy vấn với kiểu chữ của DB và gán bí danh viết thường để View hiển thị đúng
-        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, c.Name as category_name 
+        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, p.is_best_selling, p.is_new, c.Name as category_name 
                   FROM " . $this->table_name . " p 
                   LEFT JOIN Category c ON p.Category_Id = c.Id
                   ORDER BY p.Id DESC";
@@ -22,7 +22,7 @@ class ProductModel {
 
     // Lấy danh sách sản phẩm giới hạn phục vụ phân trang
     public function getProductsLimit($offset, $limit) {
-        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, c.Name as category_name 
+        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, p.is_best_selling, p.is_new, c.Name as category_name 
                   FROM " . $this->table_name . " p 
                   LEFT JOIN Category c ON p.Category_Id = c.Id
                   ORDER BY p.Id DESC
@@ -48,7 +48,7 @@ class ProductModel {
     // Tìm kiếm sản phẩm theo tên có giới hạn phân trang
     public function searchProductsLimit($keyword, $offset, $limit) {
         // Truy vấn tìm kiếm sản phẩm liên kết với bảng Category và lọc theo tên sản phẩm bằng LIKE
-        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, c.Name as category_name 
+        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, p.is_best_selling, p.is_new, c.Name as category_name 
                   FROM " . $this->table_name . " p 
                   LEFT JOIN Category c ON p.Category_Id = c.Id
                   WHERE p.Name LIKE :keyword
@@ -82,7 +82,7 @@ class ProductModel {
     // Lấy chi tiết sản phẩm theo ID
     public function getProductById($id) {
         // Thực hiện LEFT JOIN với bảng Category và lấy cả trường Image (p.Image as image)
-        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, p.Category_Id as category_id, c.Name as category_name 
+        $query = "SELECT p.Id as id, p.Name as name, p.Description as description, p.Price as price, p.Image as image, p.is_best_selling, p.is_new, p.Category_Id as category_id, c.Name as category_name 
                   FROM " . $this->table_name . " p 
                   LEFT JOIN Category c ON p.Category_Id = c.Id 
                   WHERE p.Id = :id";
@@ -93,8 +93,8 @@ class ProductModel {
         return $result;
     }
 
-    // Thêm sản phẩm mới kèm hình ảnh minh họa
-    public function addProduct($name, $description, $price, $category_id, $image) {
+    // Thêm sản phẩm mới kèm hình ảnh minh họa và các thuộc tính bán chạy / mới
+    public function addProduct($name, $description, $price, $category_id, $image, $is_best_selling = 0, $is_new = 0) {
         $errors = [];
         if (empty($name)) {
             $errors['name'] = 'Tên sản phẩm không được để trống';
@@ -109,9 +109,9 @@ class ProductModel {
             return $errors;
         }
 
-        // Tên các cột trong DB: Name, Description, Price, Image, Category_Id
-        $query = "INSERT INTO " . $this->table_name . " (Name, Description, Price, Image, Category_Id) 
-                  VALUES (:name, :description, :price, :image, :category_id)";
+        // Tên các cột trong DB: Name, Description, Price, Image, Category_Id, is_best_selling, is_new
+        $query = "INSERT INTO " . $this->table_name . " (Name, Description, Price, Image, Category_Id, is_best_selling, is_new) 
+                  VALUES (:name, :description, :price, :image, :category_id, :is_best_selling, :is_new)";
         $stmt = $this->conn->prepare($query);
 
         // Làm sạch dữ liệu
@@ -120,6 +120,8 @@ class ProductModel {
         $price = htmlspecialchars(strip_tags($price));
         $image = htmlspecialchars(strip_tags($image));
         $category_id = htmlspecialchars(strip_tags($category_id));
+        $is_best_selling = (int)$is_best_selling;
+        $is_new = (int)$is_new;
 
         // Ràng buộc tham số
         $stmt->bindParam(':name', $name);
@@ -127,6 +129,8 @@ class ProductModel {
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':image', $image);
         $stmt->bindParam(':category_id', $category_id);
+        $stmt->bindParam(':is_best_selling', $is_best_selling, PDO::PARAM_INT);
+        $stmt->bindParam(':is_new', $is_new, PDO::PARAM_INT);
 
         if ($stmt->execute()) {
             return true;
@@ -134,15 +138,15 @@ class ProductModel {
         return false;
     }
 
-    // Cập nhật thông tin sản phẩm và hình ảnh (nếu được tải lên mới)
-    public function updateProduct($id, $name, $description, $price, $category_id, $image = null) {
+    // Cập nhật thông tin sản phẩm và hình ảnh (nếu được tải lên mới) kèm thuộc tính bán chạy / mới
+    public function updateProduct($id, $name, $description, $price, $category_id, $image = null, $is_best_selling = 0, $is_new = 0) {
         if ($image !== null) {
             $query = "UPDATE " . $this->table_name . " 
-                      SET Name=:name, Description=:description, Price=:price, Image=:image, Category_Id=:category_id 
+                      SET Name=:name, Description=:description, Price=:price, Image=:image, Category_Id=:category_id, is_best_selling=:is_best_selling, is_new=:is_new 
                       WHERE Id=:id";
         } else {
             $query = "UPDATE " . $this->table_name . " 
-                      SET Name=:name, Description=:description, Price=:price, Category_Id=:category_id 
+                      SET Name=:name, Description=:description, Price=:price, Category_Id=:category_id, is_best_selling=:is_best_selling, is_new=:is_new 
                       WHERE Id=:id";
         }
         $stmt = $this->conn->prepare($query);
@@ -152,6 +156,8 @@ class ProductModel {
         $description = htmlspecialchars(strip_tags($description));
         $price = htmlspecialchars(strip_tags($price));
         $category_id = htmlspecialchars(strip_tags($category_id));
+        $is_best_selling = (int)$is_best_selling;
+        $is_new = (int)$is_new;
 
         // Ràng buộc tham số
         $stmt->bindParam(':id', $id);
@@ -159,6 +165,8 @@ class ProductModel {
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':price', $price);
         $stmt->bindParam(':category_id', $category_id);
+        $stmt->bindParam(':is_best_selling', $is_best_selling, PDO::PARAM_INT);
+        $stmt->bindParam(':is_new', $is_new, PDO::PARAM_INT);
 
         if ($image !== null) {
             $image = htmlspecialchars(strip_tags($image));

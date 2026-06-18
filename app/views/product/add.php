@@ -55,6 +55,21 @@
                 </div>
                 <small class="form-text text-muted">Hỗ trợ các định dạng ảnh: JPG, JPEG, PNG, GIF.</small>
             </div>
+
+            <!-- Đánh dấu sản phẩm bán chạy / mới -->
+            <div class="form-group">
+                <label class="font-weight-bold">Đánh dấu sản phẩm:</label>
+                <div class="d-flex">
+                    <div class="custom-control custom-checkbox mr-4">
+                        <input type="checkbox" class="custom-control-input" id="is_best_selling" name="is_best_selling" value="1">
+                        <label class="custom-control-label" for="is_best_selling">Sản phẩm bán chạy</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="is_new" name="is_new" value="1">
+                        <label class="custom-control-label" for="is_new">Sản phẩm mới</label>
+                    </div>
+                </div>
+            </div>
             
             <button type="submit" class="btn btn-primary btn-block mt-4">Thêm sản phẩm</button>
         </form>

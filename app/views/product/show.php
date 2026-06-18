@@ -35,10 +35,16 @@
                         
                         <div class="row mb-3">
                             <div class="col-sm-4 font-weight-bold text-muted">Danh mục sản phẩm:</div>
-                            <div class="col-sm-8">
+                            <div class="col-sm-8 d-flex align-items-center flex-wrap" style="gap: 5px;">
                                 <span class="badge badge-info px-3 py-2 font-weight-bold">
                                     <?php echo htmlspecialchars($product->category_name ?? 'Chưa phân loại', ENT_QUOTES, 'UTF-8'); ?>
                                 </span>
+                                <?php if (isset($product->is_best_selling) && $product->is_best_selling == 1): ?>
+                                    <span class="badge badge-danger px-3 py-2 font-weight-bold">BÁN CHẠY</span>
+                                <?php endif; ?>
+                                <?php if (isset($product->is_new) && $product->is_new == 1): ?>
+                                    <span class="badge badge-success px-3 py-2 font-weight-bold">MỚI</span>
+                                <?php endif; ?>
                             </div>
                         </div>
                         
@@ -62,7 +68,7 @@
             </div>
             
             <div class="card-footer bg-light d-flex justify-content-between p-3">
-                <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Quay lại danh sách</a>
+                <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary">Quay lại danh sách</a>
                 <?php if (SessionHelper::isAdmin()): ?>
                     <div>
                         <a href="<?php echo BASE_PATH; ?>/Product/edit/<?php echo $product->id; ?>" class="btn btn-warning mr-2 text-dark font-weight-bold">Sửa sản phẩm</a>

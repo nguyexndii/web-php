@@ -20,6 +20,8 @@ CREATE TABLE if NOT EXISTS Product
     Price DECIMAL(10, 2) NOT NULL,
     Image VARCHAR(255) default NULL,
     Category_Id INT,
+    is_best_selling TINYINT(1) DEFAULT 0,
+    is_new TINYINT(1) DEFAULT 0,
     FOREIGN KEY (Category_Id) references Category(Id) ON DELETE cascade        
 );
 

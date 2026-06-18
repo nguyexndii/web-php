@@ -24,6 +24,16 @@
                         <div class="card shadow-sm w-100 border rounded d-flex flex-column justify-content-between">
                             <!-- Hình ảnh minh họa sản phẩm -->
                             <div class="text-center bg-light border-bottom position-relative" style="height: 200px; line-height: 200px; overflow: hidden;">
+                                <!-- Badges (Bán chạy / Mới) -->
+                                <div class="position-absolute" style="top: 10px; left: 10px; z-index: 10; display: flex; flex-direction: column; gap: 5px; line-height: normal;">
+                                    <?php if (isset($product->is_best_selling) && $product->is_best_selling == 1): ?>
+                                        <span class="badge badge-danger text-uppercase px-2 py-1 shadow-sm font-weight-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">Bán chạy</span>
+                                    <?php endif; ?>
+                                    <?php if (isset($product->is_new) && $product->is_new == 1): ?>
+                                        <span class="badge badge-success text-uppercase px-2 py-1 shadow-sm font-weight-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">Mới</span>
+                                    <?php endif; ?>
+                                </div>
+
                                 <?php if (!empty($product->image) && file_exists('public/images/' . $product->image)): ?>
                                     <img src="<?php echo BASE_PATH; ?>/public/images/<?php echo $product->image; ?>" alt="<?php echo htmlspecialchars($product->name, ENT_QUOTES, 'UTF-8'); ?>" class="w-100 h-100" style="object-fit: cover;">
                                 <?php else: ?>

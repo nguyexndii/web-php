@@ -69,6 +69,21 @@
                 </div>
                 <small class="form-text text-muted">Bỏ trống ô này nếu muốn giữ lại ảnh minh họa hiện tại.</small>
             </div>
+
+            <!-- Đánh dấu sản phẩm bán chạy / mới -->
+            <div class="form-group">
+                <label class="font-weight-bold">Đánh dấu sản phẩm:</label>
+                <div class="d-flex">
+                    <div class="custom-control custom-checkbox mr-4">
+                        <input type="checkbox" class="custom-control-input" id="is_best_selling" name="is_best_selling" value="1" <?php echo $product->is_best_selling ? 'checked' : ''; ?>>
+                        <label class="custom-control-label" for="is_best_selling">Sản phẩm bán chạy</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="is_new" name="is_new" value="1" <?php echo $product->is_new ? 'checked' : ''; ?>>
+                        <label class="custom-control-label" for="is_new">Sản phẩm mới</label>
+                    </div>
+                </div>
+            </div>
             
             <button type="submit" class="btn btn-warning btn-block mt-4 text-dark font-weight-bold">Lưu thay đổi</button>
         </form>
