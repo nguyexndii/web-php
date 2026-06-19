@@ -74,7 +74,7 @@
             <button type="submit" class="btn btn-primary btn-block mt-4">Thêm sản phẩm</button>
         </form>
         
-        <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
+        <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3">Quay lại danh sách sản phẩm</a>
     </div>
 </div>
 

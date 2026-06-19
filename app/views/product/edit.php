@@ -88,7 +88,7 @@
             <button type="submit" class="btn btn-warning btn-block mt-4 text-dark font-weight-bold">Lưu thay đổi</button>
         </form>
         
-        <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3"><i class="fas fa-arrow-left"></i> Quay lại danh sách sản phẩm</a>
+        <a href="<?php echo BASE_PATH; ?>/Product/" class="btn btn-secondary mt-3">Quay lại danh sách sản phẩm</a>
     </div>
 </div>
 
