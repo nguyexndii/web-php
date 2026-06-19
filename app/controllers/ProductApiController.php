@@ -19,6 +19,7 @@ class ProductApiController
  
     private function authenticate() 
     { 
+        // Lấy thông tin header của client và giải mã 
         $headers = apache_request_headers(); 
  
         if (isset($headers['Authorization'])) { 

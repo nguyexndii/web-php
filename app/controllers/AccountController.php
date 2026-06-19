@@ -100,6 +100,7 @@ class AccountController {
         $username = $data['username'] ?? ''; 
         $password = $data['password'] ?? ''; 
         
+        // Lấy thông tin tài khoản từ database dựa trên username 
         $user = $this->accountModel->getAccountByUsername($username); 
         
         if ($user && password_verify($password, $user->password)) { 

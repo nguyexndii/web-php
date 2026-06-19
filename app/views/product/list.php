@@ -14,7 +14,7 @@
 const BASE_PATH = '<?php echo BASE_PATH; ?>';
 
 document.addEventListener("DOMContentLoaded", function() { 
-    // Lấy token từ localStorage đúng theo hướng dẫn Bài 6 trong PDF
+    // Lấy token từ localStorage
     const token = localStorage.getItem('jwtToken');
     
     // Nếu chưa đăng nhập, chuyển hướng về trang đăng nhập
@@ -27,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let isAdmin = false;
     // Giải mã token ở client để phân quyền giao diện
     try {
+        // Giải mã payload từ JWT 
         const base64Url = token.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const payload = JSON.parse(decodeURIComponent(escape(window.atob(base64))));
